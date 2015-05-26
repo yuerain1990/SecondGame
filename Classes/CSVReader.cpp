@@ -32,8 +32,8 @@ void CSVReader::destoryInstance(){
 
 /**
  *先读取CSV中的内容 然后将字段填入sqlite3中
- *@csvFileName	csv文件名称
- *@tableName	写入到数据库的表名 
+ *@param csvFileName	csv文件名称
+ *@param tableName	写入到数据库的表名 
  *现在实现了表中含有all、dialog字符串的表的创建，例如all_boy、all_girl、 boy_dialog、girl_dialog的表的创建
  *每个表的字段可能不同 故创建表要进行判断
  */

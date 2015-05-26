@@ -12,6 +12,7 @@
 #define ALL_GIRL "all_girl.csv"
 #define BOY_DIALOG "boy_dialog.csv"
 #define GIRL_DIALOG "girl_dialog.csv"
+#define IS_FIRST "is_first"
 
 MainLayer::MainLayer() : numMes(0), numDia(0)
 {
@@ -72,14 +73,31 @@ bool MainLayer::init(){
 	//Director::getInstance()->setNotificationNode(m_topLayer);	//悬浮层 一直显示在屏幕上 不受场景切换的影响 这里是node被retain了一次
 	//m_topLayer->onEnter();	//有内存泄露 没有释放悬浮层 不知道怎么释放
 	
-	//将csv文件写入到db文件中
+	//将csv文件写入到db文件中 只在第一次运行程序时执行
 	//这里需要遍历所有的csv文件，将其中的内容写入到指定的表中 将文件名作为表名
-	std::vector<std::string> allcsv = { ALL_BOY, ALL_GIRL, BOY_DIALOG, GIRL_DIALOG };
-	for (size_t i = 0; i < allcsv.size(); i++){
-		CSVReader::getInstance()->CsvToSqlite3(allcsv.at(i).c_str(), split(allcsv.at(i), ".").at(0));
+	auto isfirst = UserDefault::getInstance()->getBoolForKey(IS_FIRST, false);	//第一次进来是false 默认是false
+	if (!isfirst){
+		std::vector<std::string> allcsv = { ALL_BOY, ALL_GIRL, BOY_DIALOG, GIRL_DIALOG };
+		for (size_t i = 0; i < allcsv.size(); i++){
+			CSVReader::getInstance()->CsvToSqlite3(allcsv.at(i).c_str(), split(allcsv.at(i), ".").at(0));
+		}
+		UserDefault::getInstance()->setBoolForKey(IS_FIRST, true);	//路径C:\Users\Administrator\AppData\Local\SecondGame\UserDefault.xml
 	}
 	//CSVReader::getInstance()->CsvToSqlite3("all_boy.csv", "all_boy");
-	//现在的单例模式 只需要在一个地方创建一次就行 在该地方释放就可以
+
+	//现在的单例模式 只需要在一个地方创建一次就行  在其他地方都能用到单例的初始化对象 对象只有一个 在该地方释放就可以
+	//怎么去弄呢 这是一个问题 每个人有4中属性
+	//整理目前完成的任务
+	/*
+	1、对话界面实现
+	2、数据库接口都写了
+	3、列表界面
+	4、多界面
+	5、成功约到啦的图片的大小几文字的素材 ***
+	6、聚会界面(当成功约到一个人物之后出现聚会提醒)***
+	7、选择人物参加聚会的界面 需要做出一个人物列表出来 任务前面需要有勾选控件***
+	*/
+
 
 	return true;
 }

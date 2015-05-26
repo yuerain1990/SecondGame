@@ -274,7 +274,7 @@ void BottomLayer::sendMessage(MenuItemSprite* menuSprite, DialogLayer* dialogLay
 	dialogLayer->alterHeartScore(_score, v, col);
 
 	_bottom_bg->runAction(moveBy->reverse());
-	//弹出对话框
+	//收起对话框
 	_popItem->setName(NO);
 	auto pop = static_cast<Sprite*>(_popItem->getChildByTag(1));
 	pop->setSpriteFrame("pop1.png");
@@ -285,9 +285,9 @@ void BottomLayer::sendMessage(MenuItemSprite* menuSprite, DialogLayer* dialogLay
 		//判断到第16题时 回答完成后计算分数 分数不够80分的话 弹出约会失败的提示
 		//分数大于或等于80分的话 弹出约会成功的提示 然后返回到成就界面 这里显示你所有约到的人
 		if (_score >= 80)
-			log("success");
+			log("success");	//应该弹出成功的对话框
 		else
-			log("failed");
+			log("failed");	//应该弹出失败的对话框
 		return;
 	}
 	this->resetLabelValueWithId(++_no);

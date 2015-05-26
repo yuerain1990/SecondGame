@@ -67,18 +67,18 @@ public:
 	 */
 	void menuCallback(Ref* pSender);
 	/**修改好感度分数
-	 *@score	分数
-	 *@v		传入的分数变化+5还是-5
-	 *@color	传入的颜色绿色还是红色
+	 *@param score	分数
+	 *@param v		传入的分数变化+5还是-5
+	 *@param color	传入的颜色绿色还是红色
 	 */
 	void alterHeartScore(float score, const char* v, Color3B& color);
 	/**查询表game_data的内容
-	 *@index	索引id
+	 *@param index	索引id
 	 */
 	struct DataBoy* searchGameData(int index);
 	/**查询表game_data的内容
-     *@pid		索引id
-	 *@pboyid	对象id
+     *@param pid		索引id
+	 *@param pboyid	对象id
 	 */
 	struct Dialog* searchDialog(int pid, int pboyid);
 	/**
@@ -86,13 +86,13 @@ public:
 	 */
 	void setListViewContent();
 	/**对象话语内容 用于下次进入显示已经对话的内容
-	 *@pStr		内容 
-	 *@pTime	时间
+	 *@param pStr	内容 
+	 *@param pTime	时间
 	 */
 	void youWordWithContent(std::string pStr, std::string pTime);
 	/**我的话语内容 用于下次进入显示已经对话的内容
-	*@pStr		内容
-	*@pTime		时间
+	*@param pStr	内容
+	*@param pTime	时间
 	*/
 	void meWordWithContent(std::string pStr, std::string pTime);
 	CC_SYNTHESIZE(int, _no, No);

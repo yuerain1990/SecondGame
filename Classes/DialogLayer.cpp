@@ -164,6 +164,13 @@ Scale9Sprite* DialogLayer::youWordWithId(int id, int score, std::string meword){
 	timeLabel->setPosition(Vec2(sp->getContentSize().width + 5, 0));
 	sp->addChild(timeLabel);
 
+	//头像
+	auto headSprite = Sprite::createWithSpriteFrameName(StringUtils::format("girl%03d.png", 0));
+	ClippingNode* headNode = ccDrawRoundRect(headSprite, Vec2(-50, -50), Vec2(50, 50), 10, 1000);
+	headNode->setPosition(Vec2(-42, sp->getContentSize().height - 30));
+	headNode->setScale(0.6);
+	sp->addChild(headNode);
+
 
 	struct DataBoy* gamedata = this->searchGameData(1);//改
 	std::string you_word = gamedata->you_word;
@@ -172,7 +179,9 @@ Scale9Sprite* DialogLayer::youWordWithId(int id, int score, std::string meword){
 	if (meword != ""){
 		me_word.append(meword).append("=").append(cur).append("|");
 	}
-	sql = StringUtils::format("update game_data set score = %d, you_word = '%s', me_word = '%s' where boy_id = 1", score, you_word.c_str(), me_word.c_str());
+	//更新数据库
+	sql = StringUtils::format("update game_data set score = %d, current_word_id = %d, you_word = '%s', me_word = '%s' where boy_id = 1", 
+		score, id, you_word.c_str(), me_word.c_str());
 	DBUtil::getInstance()->updateData(sql);
 	
 	//防止内存泄露
@@ -230,7 +239,7 @@ void DialogLayer::createListView(){
 	listView->setContentSize(Size(winSize.width, winSize.height - 130 - 80));
 	listView->setPosition(Vec2(0, 80));
 	listView->setAnchorPoint(Vec2::ZERO);
-	listView->setClippingEnabled(true);								//是否裁剪
+	listView->setClippingEnabled(false);								//是否裁剪
 	listView->scrollToBottom(0.2f, false);
 	this->addChild(listView);
 
@@ -268,14 +277,8 @@ void DialogLayer::insertYouItemWithId(int id, int score, std::string str){
 	auto sp = youWordWithId(id, score, str);
 	ui::Layout* item = ui::Layout::create();
 	item->setContentSize(sp->getContentSize());
-	sp->setPosition(Vec2(40, 0));
+	sp->setPosition(Vec2(80, 0));	//(40, 0)
 	item->addChild(sp);
-
-	////添加头像 这里有问题 能显示头像 但是不能显示对话框??需要修改代码
-	//auto headSprite = Sprite::createWithSpriteFrameName(StringUtils::format("girl%03d.png", 0));
-	//ClippingNode* headNode = ccDrawRoundRect(headSprite, Vec2(-50, -50), Vec2(50, 50), 15, 1000);
-	//headNode->setPosition(Vec2(20, 20));
-	//item->addChild(headNode);
 
 	_listView->insertCustomItem(item, items_count);
 }
@@ -340,7 +343,7 @@ struct DataBoy* DialogLayer::searchGameData(int index){
 	std::string sql1 = StringUtils::format("select count(*) from game_data where boy_id = %d", index);
 	std::string sql2 = StringUtils::format("select * from game_data where boy_id = %d", index);
 	std::string sql3 = StringUtils::format("insert into game_data (boy_id) values (%d)", index);
-	std::vector<std::map<std::string, std::string>> vec = DBUtil::getInstance()->searchData(sql1, sql2, sql3);//改
+	std::vector<std::map<std::string, std::string>> vec = DBUtil::getInstance()->searchData(sql1, sql2, sql3);
 	struct DataBoy* data = new DataBoy;
 	for (size_t i = 0; i < vec.size(); i++)
 	{
@@ -380,7 +383,7 @@ struct DataBoy* DialogLayer::searchGameData(int index){
 
 struct Dialog* DialogLayer::searchDialog(int pid, int pboyid){
 	std::string sql = StringUtils::format("select * from boy_dialog where id = %d and boy_id = %d", pid, pboyid);
-	std::vector<std::map<std::string, std::string>> vec = DBUtil::getInstance()->searchData(sql);//改
+	std::vector<std::map<std::string, std::string>> vec = DBUtil::getInstance()->searchData(sql);
 	struct Dialog* data = new Dialog;
 	for (size_t i = 0; i < vec.size(); i++)
 	{
@@ -438,8 +441,8 @@ void DialogLayer::setListViewContent(){
 	delete gamedata;
 }
 /**
- *@pStr  内容
- *@pTime 时间
+ *@param pStr  内容
+ *@param pTime 时间
  */
 void DialogLayer::youWordWithContent(std::string pStr, std::string pTime){
 	auto winSize = Director::getInstance()->getVisibleSize();
@@ -466,21 +469,28 @@ void DialogLayer::youWordWithContent(std::string pStr, std::string pTime){
 	timeLabel->setAnchorPoint(Vec2(0, 0));
 	timeLabel->setPosition(Vec2(sp->getContentSize().width + 5, 0));
 	sp->addChild(timeLabel);
-	//添加到ListView上
+	//添加到ListView上 从末尾插入就是items.size()的这个位置插入item的
 	if (!_listView){
 		return;
 	}
+	//头像
+	auto headSprite = Sprite::createWithSpriteFrameName(StringUtils::format("girl%03d.png", 0));
+	ClippingNode* headNode = ccDrawRoundRect(headSprite, Vec2(-50, -50), Vec2(50, 50), 10, 1000);
+	headNode->setPosition(Vec2(-42, sp->getContentSize().height - 30));
+	headNode->setScale(0.6);
+	sp->addChild(headNode);	//添加裁剪的时候有问题 ClippingNode添加到ListView上两个都是有裁剪的，所以会冲突 现在的解决方案是把ListView的裁剪给关闭了
+
 	Vector<ui::Widget*>& items = _listView->getItems();
 	size_t items_count = items.size();
 	ui::Layout* item = ui::Layout::create();
 	item->setContentSize(sp->getContentSize());
-	sp->setPosition(Vec2(40, 0));
+	sp->setPosition(Vec2(80, 0));	//(40, 0)
 	item->addChild(sp);
 	_listView->insertCustomItem(item, items_count);
 }
 /**
- *@pStr  内容
- *@pTime 时间
+ *@param pStr  内容
+ *@param pTime 时间
  */
 void DialogLayer::meWordWithContent(std::string pStr, std::string pTime){
 	auto winSize = Director::getInstance()->getVisibleSize();
