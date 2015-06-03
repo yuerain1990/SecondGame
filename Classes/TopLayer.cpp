@@ -1,5 +1,7 @@
 #include "TopLayer.h"
 #include "Chinese.h"
+#include "FilterSprite.h"
+#include "ShaderEffect.h"
 
 TopLayer::TopLayer() : numMes(0), numDia(0)
 {
@@ -18,9 +20,12 @@ bool TopLayer::init(){
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 
 	//信息层背景
-	auto topbar = Sprite::createWithSpriteFrameName("hengtiao.png");
+	//auto topbar = FilterSprite::createWithSpriteFrameName("hengtiao.png");
+	auto topbar = EffectSprite::createWithSpriteFrameName("hengtiao.png");
 	topbar->setPosition(Vec2(visibleSize.width * 0.5, visibleSize.height - topbar->getContentSize().height * 0.5));
 	this->addChild(topbar);
+	//topbar->setFilterMat(FilterSprite::ES_COLD);
+	topbar->setEffect(EffectGrey::create());
 
 	//头标题
 	/*auto */info = Label::createWithSystemFont(Chinese::getInstance()->ChineseWord("message"), "Arial", 40);

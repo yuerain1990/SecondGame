@@ -1,6 +1,7 @@
 #include "FourPage.h"
 #include "RowInfo.h"
 #include "Chinese.h"
+#include "SelectPerson.h"
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 #include "vld.h"
 #endif
@@ -113,6 +114,17 @@ bool FriendPage::init(){
 	if (!LayerColor::initWithColor(Color4B(255, 255, 255, 180))){
 		return false;
 	}
+
+	ui::Button* button = ui::Button::create("closeNormal.png", "closeSelected.png");
+	button->setPosition(Vec2(320, 268));
+	button->setScale(1.5);
+	button->setTitleText("go select person");
+	button->setZoomScale(0.3);
+	button->setPressedActionEnabled(true);
+	button->addClickEventListener([this](Ref* sender){
+		this->addChild(SelectPerson::create());
+	});
+	this->addChild(button);
 
 	return true;
 }

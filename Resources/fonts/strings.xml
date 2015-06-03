@@ -8,5 +8,7 @@
 	<string>一姐</string>
 	<key>info</key>
 	<string>美杜莎，后期DPS</string>
+	<key>tip</key>
+	<string>还可以选择%d名</string>
 </dict>
 </plist>

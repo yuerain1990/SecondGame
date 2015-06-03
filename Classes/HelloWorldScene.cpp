@@ -1,5 +1,11 @@
 #include "HelloWorldScene.h"
 #include "MainLayer.h"
+#include "FilterSprite.h"
+#include "SpriteWithHue.h"
+#include "ShaderEffect.h"
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
+#include "vld.h"
+#endif
 
 USING_NS_CC;
 
@@ -65,8 +71,24 @@ bool HelloWorld::init()
     this->addChild(label, 1);
 
     // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
+    //auto sprite = Sprite::create("HelloWorld.png");
+	//精灵黑白化 状态
+	/*auto sprite = FilterSprite::create("alien.png");
+	GLfloat  filterMat[16] = {
+		0.5f, 0.5f, 0.5f, -0.2f,
+		0.5f, 0.5f, 0.5f, 0.2f,
+		0.5f, 0.5f, 0.5f, -0.2f,
+		0.0f, 0.1f, 0.0f, 1.0f
+	};
+	sprite->setFilterMat(FilterSprite::ES_BLACK_AND_WHITE);*/
 
+	//精灵换颜色 换装 修改色调实现资源复用
+	//auto sprite = SpriteWithHue::create("alien.png");
+	//sprite->setHue(2 * M_PI * 0.4);
+
+	auto sprite =  EffectSprite::create("alien.png");
+	sprite->setEffect(EffectGrey::create());
+	
     // position the sprite on the center of the screen
     sprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
 
